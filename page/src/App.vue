@@ -1,0 +1,46 @@
+<template>
+    <div class="outerWrapper">
+        <el-upload class="upload-demo" drag
+            action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+            multiple
+        >
+            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+            <div class="el-upload__text"> Drop file here or <em>click to upload</em></div>
+            <template #tip>
+                <div class="el-upload__tip">jpg/png files with a size less than 500kb</div>
+            </template>
+        </el-upload>
+    </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+    name: 'App',
+})
+</script>
+
+<style lang="scss">
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body, #app, .outerWrapper {
+    width: 100%;
+    height: 100%;
+}
+
+.outerWrapper {
+    background-color: cadetblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.upload-demo {
+    width: 800px;
+}
+
+</style>

@@ -1,7 +1,7 @@
 <template>
     <div class="outerWrapper">
         <el-upload class="upload-demo" drag
-            action="http://upload.localhost/api/upload"
+            :action="apiURI"
             multiple
         >
             <el-icon class="el-icon--upload"><upload-filled /></el-icon>
@@ -15,10 +15,18 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { apiURI } from '../../config/page_demo'
 
 export default defineComponent({
     name: 'App',
+    setup() {
+        return {
+            apiURI
+        }
+    }
 })
+
+
 </script>
 
 <style lang="scss">

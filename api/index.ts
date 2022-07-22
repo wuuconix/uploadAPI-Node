@@ -1,7 +1,11 @@
 import express from "express"
 import multer from "multer"
 
-const upload = multer({ dest: "./uploads", limits: { fileSize: 1024 ** 2 * 5 }})
+const upload = multer({ dest: "./uploads", limits: { fileSize: 1024 ** 2 * 5 }, fileFilter: (req, file, callback) => {
+    file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf-8')
+    callback(null, true)
+}})
+
 const app = express()
 
 app.get("/", (req, res) => {
@@ -11,7 +15,7 @@ app.get("/", (req, res) => {
 app.post('/upload', upload.single("file"), (req, res) => {
     console.log(req.file)
     console.log(req.file?.originalname)
-    res.json({ok: "ok"})
+    res.json({success: `${req.file?.originalname} upload successfully`})
 })
 
 app.get('/upload', (req, res) => {

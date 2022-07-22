@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { apiURI } from '../../config/page_demo'
+import { apiURI } from '../../config/page'
 
 export default defineComponent({
     name: 'App',

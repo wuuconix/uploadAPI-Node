@@ -13,5 +13,6 @@ module.exports = defineConfig({
                 resolvers: [ElementPlusResolver()],
             }),
         ],
-    }
+    },
+    outputDir: "upload"
 })

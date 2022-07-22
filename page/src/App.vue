@@ -1,13 +1,13 @@
 <template>
     <div class="outerWrapper">
         <el-upload class="upload-demo" drag
-            action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+            action="http://upload.localhost/api/upload"
             multiple
         >
             <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-            <div class="el-upload__text"> Drop file here or <em>click to upload</em></div>
+            <div class="el-upload__text"> 拖拽或者 <em>点击上传</em></div>
             <template #tip>
-                <div class="el-upload__tip">jpg/png files with a size less than 500kb</div>
+                <div class="el-upload__tip">支持5M以下的jpg或者png的图片</div>
             </template>
         </el-upload>
     </div>
@@ -33,7 +33,7 @@ html, body, #app, .outerWrapper {
 }
 
 .outerWrapper {
-    background-color: cadetblue;
+    background-color: aliceblue;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -41,6 +41,6 @@ html, body, #app, .outerWrapper {
 
 .upload-demo {
     width: 800px;
+    margin-top: -100px;
 }
-
 </style>

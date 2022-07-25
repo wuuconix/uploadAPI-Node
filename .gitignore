@@ -1,6 +1,6 @@
 **/node_modules
-config/page.ts
+config/page.js
 config/upload.conf
 config/api.mjs
 api/uploads
-page/upload
+page/dist

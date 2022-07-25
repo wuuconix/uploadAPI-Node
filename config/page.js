@@ -1,1 +1,0 @@
-export const apiURI = "http://upload.localhost/api/upload"

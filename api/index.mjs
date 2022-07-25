@@ -74,16 +74,20 @@ app.post('/upload', upload.single("file"), async (req, res) => {
     const { Interface } = req.query
     let response = {}
     console.log(Interface)
-    if (Interface == 0) {
-        const data = await uploadToMi(req.file.filename)
-        console.log(data)
-        const url = data.info.tempUrl
-        response = { success: { message: "上传小米账号头像接口成功", url }, origin: data}
-    } else if (Interface == 1) {
-        const data = await uploadToMiGame(req.file.filename)
-        console.log(data)
-        const url = data.data.url
-        response = { success: { message: "上传小米游戏帖子封面接口成功", url }, origin: data}
+    try {
+        if (Interface == 0) {
+            const data = await uploadToMi(req.file.filename)
+            console.log(data)
+            const url = data.info.tempUrl
+            response = { success: { message: "上传小米账号头像接口成功", url }, origin: data}
+        } else if (Interface == 1) {
+            const data = await uploadToMiGame(req.file.filename)
+            console.log(data)
+            const url = data.data.url
+            response = { success: { message: "上传小米游戏帖子封面接口成功", url }, origin: data}
+        }
+    } catch(e) {
+        response = { error: { message: e.toString() }}
     }
     console.log(response)
     res.json(response)

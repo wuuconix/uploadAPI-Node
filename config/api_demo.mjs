@@ -1,3 +1,5 @@
 export const userId = ""
 export const passport_ph = ""
 export const cookie = ""
+export const miGameLoginuuid = ""
+export const miGameToken = ""

@@ -1,5 +1,6 @@
 **/node_modules
 config/page.ts
 config/upload.conf
+config/api.mjs
 api/uploads
 page/upload

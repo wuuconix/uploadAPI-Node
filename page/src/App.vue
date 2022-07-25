@@ -1,7 +1,11 @@
 <template>
-    <div class="outerWrapper">
+    <div class="outerWrapper" :class="{up}">
+        <el-radio-group v-model="Interface">
+            <el-radio label="0" size="large" border>小米账号头像接口</el-radio>
+            <el-radio label="1" size="large" border>小米游戏帖子封面接口</el-radio>
+        </el-radio-group>
         <el-upload class="upload-demo" drag
-            :action="apiURI"
+            :action="uploadURI"
             :on-success="handle_success"
             :on-error="handle_error"
         >
@@ -11,28 +15,42 @@
                 <div class="el-upload__tip">支持10M以下的jpg或者png的图片</div>
             </template>
         </el-upload>
-        <a :href="imgSrc">{{ imgSrc }}</a>
-        <img :src="imgSrc">
+        <el-link type="primary" :href="imgSrc">{{ imgSrc }}</el-link>
+        <el-image :src="imgSrc" :preview-src-list="[imgSrc]"/>
     </div>
 </template>
 
-<script lang="ts" setup>
-import { ref } from 'vue'
+<script setup>
+import { ref, computed, watch, onMounted } from 'vue'
 import { apiURI } from '../../config/page'
 import { ElMessage } from 'element-plus'
 import 'element-plus/es/components/message/style/css'
 
+const Interface = ref("0")
+const uploadURI = computed(() => `${apiURI}?Interface=${Interface.value}`)
 const imgSrc = ref("")
+const up = ref(true)
+
+onMounted(() => {
+    Interface.value = new URL(location.href).searchParams.get("Interface") ?? "0"
+})
+
 function handle_success(res) {
-    imgSrc.value = res.info.tempUrl
-    ElMessage.success("上传成功")
+    imgSrc.value = res.success.url
+    ElMessage.success(res.success.message)
 }
+
 function handle_error(res) {
     ElMessage.error(res)
 }
+
+watch(imgSrc, src => {
+    up.value = src != "" ? false : true
+})
+
 </script>
 
-<style lang="scss">
+<style>
 * {
     margin: 0;
     padding: 0;
@@ -43,20 +61,33 @@ html, body, #app, .outerWrapper {
     height: 100%;
 }
 
-.outerWrapper {
+#app {
     background-color: aliceblue;
+}
+
+.outerWrapper {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.up {
+    transform: translateY(-100px);
 }
 
 .upload-demo {
     width: 800px;
-    margin-top: -100px;
 }
 
-img {
-    width: 500px;
+.el-radio-group {
+    margin-bottom: 20px;
+}
+
+.el-image {
+    margin-top: 5px;
+    max-height: 500px;
 }
 </style>

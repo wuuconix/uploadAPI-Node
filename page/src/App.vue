@@ -23,7 +23,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { apiURI } from '../../config/page'
-import { ElMessage } from 'element-plus'
+import { componentSizes, ElMessage } from 'element-plus'
 import 'element-plus/es/components/message/style/css'
 
 const Interface = ref("0")
@@ -36,8 +36,13 @@ onMounted(() => {
 })
 
 function handle_success(res) {
-    imgSrc.value = res.success.url
-    ElMessage.success(res.success.message)
+    if (res.success) {
+        imgSrc.value = res.success.url
+        ElMessage.success(res.success.message)
+    } else if (res.error) {
+        console.log(res.error)
+        ElMessage.error("未知错误")
+    }
 }
 
 function handle_error(res) {

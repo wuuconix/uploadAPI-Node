@@ -3,7 +3,7 @@ import multer from "multer"
 import { statSync, createReadStream } from "node:fs"
 import FormData from "form-data"
 import fetch from "node-fetch"
-import { userId, passport_ph, cookie } from "../config/api.mjs"
+import { userId, passport_ph, cookie, miGameLoginuuid, miGameToken } from "../config/api.mjs"
 
 const upload = multer({ dest: "./uploads", limits: { fileSize: 1024 ** 2 * 10 }, fileFilter: (req, file, callback) => {
     file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf-8')
@@ -23,7 +23,6 @@ async function uploadToMi(filename) {
     form.append("usercenter_ph", "")
     form.append("passportsecurity_ph", "")
     form.append("passToken", "")
-    
     const options = {
         method: 'POST',
         credentials: 'include',
@@ -33,9 +32,32 @@ async function uploadToMi(filename) {
             "Accept": "text/plain; charset=utf-8",
             "Sec-Ch-Ua": "\"Chromium\";v=\"103\", \".Not/A)Brand\";v=\"99\"",
         }
-    };
-    
+    }
     const response = await fetch("https://account.xiaomi.com:443/pass/auth/profile/requestUpload", options)
+    const data = await response.json()
+    return data
+}
+
+/* 小米游戏封面上传接口 */
+async function uploadToMiGame(filename) {
+    const path = `./uploads/${filename}`
+    const { size } = statSync(path)
+    console.log(size)
+    const fileStream = createReadStream(path)
+    const form = new FormData()
+    form.append("file", fileStream, { knownLength: size, filename: `${filename}.jpg`, contentType: "image/jpeg" })
+    const options = {
+        method: 'POST',
+        body: form,
+        headers: {
+            "Loginuuid": miGameLoginuuid, 
+            "Token": miGameToken, 
+        }
+    }
+    const response = await fetch("https://app.knights.mi.com:443/ksyun/api/upload/picture", options)
+    console.log(response)
+    console.log(response.status)
+    console.log(response.statusText)
     const data = await response.json()
     return data
 }
@@ -49,9 +71,22 @@ app.get("/", (req, res) => {
 app.post('/upload', upload.single("file"), async (req, res) => {
     console.log(req.file)
     console.log(req.file?.originalname)
-    const data = await uploadToMi(req.file.filename)
-    console.log(data)
-    res.json(data)
+    const { Interface } = req.query
+    let response = {}
+    console.log(Interface)
+    if (Interface == 0) {
+        const data = await uploadToMi(req.file.filename)
+        console.log(data)
+        const url = data.info.tempUrl
+        response = { success: { message: "上传小米账号头像接口成功", url }, origin: data}
+    } else if (Interface == 1) {
+        const data = await uploadToMiGame(req.file.filename)
+        console.log(data)
+        const url = data.data.url
+        response = { success: { message: "上传小米游戏帖子封面接口成功", url }, origin: data}
+    }
+    console.log(response)
+    res.json(response)
 })
 
 app.get('/upload', (req, res) => {

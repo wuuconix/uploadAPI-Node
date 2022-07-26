@@ -14,7 +14,6 @@ const upload = multer({ dest: "./uploads", limits: { fileSize: 1024 ** 2 * 10 },
 async function uploadToMi(filename) {
     const path = `./uploads/${filename}`
     const { size } = statSync(path)
-    console.log(size)
     const fileStream = createReadStream(path)
     const form = new FormData()
     form.append("userfile", fileStream, { knownLength: size, filename: `${filename}.jpg`, contentType: "image/jpeg" })
@@ -42,7 +41,6 @@ async function uploadToMi(filename) {
 async function uploadToMiGame(filename) {
     const path = `./uploads/${filename}`
     const { size } = statSync(path)
-    console.log(size)
     const fileStream = createReadStream(path)
     const form = new FormData()
     form.append("file", fileStream, { knownLength: size, filename: `${filename}.jpg`, contentType: "image/jpeg" })
@@ -69,11 +67,11 @@ app.get("/", (req, res) => {
 })
 
 app.post('/upload', upload.single("file"), async (req, res) => {
-    console.log(req.file)
-    console.log(req.file?.originalname)
+    // console.log(req.file)
+    // console.log(req.file?.originalname)
     const { Interface } = req.query
     let response = {}
-    console.log(Interface)
+    console.log(`Interfacae: ${Interface}`)
     try {
         if (Interface == 0) {
             const data = await uploadToMi(req.file.filename)

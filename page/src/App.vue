@@ -1,8 +1,7 @@
 <template>
-    <div class="outerWrapper" :class="{up}">
+    <div class="outerWrapper">
         <el-radio-group v-model="Interface">
-            <el-radio label="0" size="large" border>小米账号头像接口</el-radio>
-            <el-radio label="1" size="large" border>小米游戏帖子封面接口</el-radio>
+            <el-radio v-for="(item, index) in list" :label="`${index}`" size="large" border>{{ item }}</el-radio>
         </el-radio-group>
         <el-upload class="upload-demo" drag
             :action="uploadURI"
@@ -21,23 +20,28 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
-import { apiURI } from '../../config/page'
-import { componentSizes, ElMessage } from 'element-plus'
+import { ref, computed, onMounted } from 'vue'
+import { baseURI } from '../../config/page'
+import { ElMessage } from 'element-plus'
 import 'element-plus/es/components/message/style/css'
 
 const Interface = ref("0")
-const uploadURI = computed(() => `${apiURI}?Interface=${Interface.value}`)
+const uploadURI = computed(() => `${baseURI}/upload?Interface=${Interface.value}`)
 const imgSrc = ref("")
 const up = ref(true)
+const list = ref([])
 
-onMounted(() => {
+onMounted(async () => {
+    const response = await fetch(`${baseURI}/interfaces`)
+    list.value = await response.json()
     Interface.value = new URL(location.href).searchParams.get("Interface") ?? "0"
+
 })
 
 function handle_success(res) {
     if (res.success) {
         imgSrc.value = res.success.url
+        up.value = false
         ElMessage.success(res.success.message)
     } else if (res.error) {
         console.log(res.error)
@@ -48,10 +52,6 @@ function handle_success(res) {
 function handle_error(res) {
     ElMessage.error(res)
 }
-
-watch(imgSrc, src => {
-    up.value = src != "" ? false : true
-})
 
 </script>
 
@@ -79,10 +79,6 @@ html, body, #app, .outerWrapper {
     overflow-x: hidden;
 }
 
-.up {
-    transform: translateY(-100px);
-}
-
 .upload-demo {
     width: 800px;
 }
@@ -94,5 +90,8 @@ html, body, #app, .outerWrapper {
 .el-image {
     margin-top: 5px;
     max-height: 500px;
+    min-height: 100px;
+    border-radius: 5px;
 }
+
 </style>
